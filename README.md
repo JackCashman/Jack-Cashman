@@ -1,5 +1,127 @@
 # Jack-Cashman
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Horizon</title>
+	<style>
+		body {
+			background-color: #F0F0F0;
+		}
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 50px;
+		}
+		#title {
+			font-size: 50px;
+			font-weight: bold;
+			color: black;
+			margin-bottom: 30px;
+		}
+		#search-box {
+			display: flex;
+			align-items: center;
+			background-color: white;
+			padding: 5px;
+			border-radius: 14px;
+			box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+		}
+		#search-input {
+			flex-grow: 1;
+			border: none;
+			font-size: 20px;
+			padding: 5px;
+			margin-left: 10px;
+			outline: none;
+		}
+		#search-input:focus {
+			border: none;
+			outline: none;
+		}
+		#search-button {
+			background-color: #2196F3;
+			color: white;
+			border: none;
+			font-size: 20px;
+			border-radius: 10px;
+			padding: 5px 10px;
+			margin-left: 10px;
+			cursor: pointer;
+		}
+		#result-box {
+			background-color: white;
+			padding: 20px;
+			border-radius: 14px;
+			box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+			margin-top: 30px;
+			width: 500px;
+			height: 280px;
+			overflow: auto;
+		}
+		#reveal-button {
+			background-color: #2196F3;
+			color: white;
+			border: none;
+			font-size: 20px;
+			border-radius: 10px;
+			padding: 5px 10px;
+			margin-left: 10px;
+			cursor: pointer;
+			float: right;
+		}
+		#reveal-button:hover {
+			background-color: #0D47A1;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div id="title">Horizon</div>
+		<div id="search-box">
+			<img src="wikipedia.png" width="28px" height="28px" style="margin-left: 10px;">
+			<input type="text" id="search-input" placeholder="Search on Wikipedia...">
+			<button id="search-button">Search</button>
+		</div>
+		<div id="result-box"></div>
+		<button id="reveal-button">Reveal</button>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/@openai/api@0.6.0/dist/openai-api.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		const openai = new OpenAI("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");
 
+		$("#search-button").on("click", async function() {
+			const query = $("#
+def search(query):
+    wiki = wikipediaapi.Wikipedia('en')
+    page = wiki.page(query)
+    if page.exists():
+        summary = page.summary
+        text = summary.split('\n')[0]
+        source = f'Source: {page.fullurl}'
+        return text, source
+    else:
+        return 'Sorry, no results were found for your query.', ''
+
+def get_answers(query):
+    text, source = search(query)
+    prompt = f"What are some questions related to {query}?"
+    inputs = tokenizer(prompt, return_tensors='pt')
+    outputs = model.generate(inputs['input_ids'], max_length=128, num_return_sequences=3, early_stopping=True)
+    questions = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+    return text, source, questions
+
+def update_results():
+    query = search_box.value
+    text, source, questions = get_answers(query)
+    result_box.value = f'{text}\n\n{source}\n\nSome related questions:\n' + '\n'.join([f'{i+1}. {q}' for i,q in enumerate(questions)])
+
+<input type="text" id="search-input" placeholder="输入搜索关键词...">
+<div id="suggestion-box"></div>
+
+<script>
 const input = document.querySelector('#search-input');
 const suggestionBox = document.querySelector('#suggestion-box');
 
